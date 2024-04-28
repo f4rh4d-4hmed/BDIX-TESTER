@@ -1,6 +1,6 @@
 # BDIX-TESTER-PY
 
-Link Checker is a Python script that checks the status of multiple URLs. It reads the links from a file (`url.txt`), checks their availability, and saves the working links to another file (`works.txt`). Additionally, it provides options to open the working links in a web browser.
+BDIX-TESTER is a Python script that checks the status of multiple URLs. It reads the links from a file (`url.txt`), checks their availability, and saves the working links to another file (`works.txt`). Additionally, it provides options to open the working links in a web browser.
 
 ## Installation
 
