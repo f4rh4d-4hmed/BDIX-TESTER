@@ -1,11 +1,13 @@
 import requests
 import colorama
-from colorama import Fore, Style
+from colorama import Fore, Style, init
 import re
 import webbrowser
 import random
 import time
 import keyboard
+
+init(convert=True)
 
 def read_links_from_file(file_path):
     with open(file_path, 'r') as file:
