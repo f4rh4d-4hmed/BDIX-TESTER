@@ -71,7 +71,6 @@ def open_links_in_browser(links, selected_indices):
             print(f"Invalid index: {index}")
 
 try:
-    # Read links from url.txt
     links = read_links_from_file('url.txt')
 
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
@@ -92,13 +91,10 @@ try:
         links.extend(additional_links)
 
 
-    # Process the links
     working_links = process_links(links)
 
-    # Save working links to works.txt
     save_working_links(working_links, 'works.txt')
 
-    # Asks the user what to do with the working links
     print("\n\nWhat do you want to do?\n\n1. Open all links in browser (Only Working)\n\n2. Only open the links I want\n")
     
     while True:
@@ -115,11 +111,10 @@ try:
     else:
         print("Invalid choice. Please enter either 1 or 2.")
 
-    # Print the demo text with random colors
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
     author = "This code was developed by Farhad Ahmed\nFor more information visit me at http://github.com/f4rh4d-4hmed"
 
-    for _ in range(1):             #Number of times the author credit to show
+    for _ in range(1):
         colored_text = ''.join(random.choice(colors) + char for char in author)
         print(colored_text)
         time.sleep(0.1)
