@@ -5,7 +5,7 @@ import re
 import webbrowser
 import random
 import time
-import keyboard
+
 
 init(convert=True)
 
@@ -30,11 +30,18 @@ def check_link(link):
     except requests.exceptions.RequestException:
         return f"{Fore.RED}Not working{Style.RESET_ALL}"
 
+def strip_color_codes(text):
+    # Regex pattern to match ANSI escape sequences (color codes)
+    ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
+    return ansi_escape.sub('', text)
+
 def save_working_links(links, output_file):
     with open(output_file, 'w') as file:
         for i, link in enumerate(links, start=1):
             status = check_link(link)
-            file.write(f"{i}. {link} - {status}\n")
+            # Strip color codes for file output
+            stripped_status = strip_color_codes(status)
+            file.write(f"{link}\n")
 
 def process_links(links):
     working_links = []
@@ -51,9 +58,6 @@ def process_links(links):
         else:
             print(f"{number_color}{i}. {Style.RESET_ALL}{link_color}{link}{Style.RESET_ALL} - {status_color}{status}{Style.RESET_ALL}")
     return working_links
-
-
-
 
 def open_links_in_browser(links, selected_indices):
     index_ranges = []
@@ -90,17 +94,18 @@ try:
         additional_links = additional_links.split()  # Split the additional links string into separate links
         links.extend(additional_links)
 
-
     working_links = process_links(links)
 
     save_working_links(working_links, 'works.txt')
 
     print("\n\nWhat do you want to do?\n\n1. Open all links in browser (Only Working)\n\n2. Only open the links I want\n")
-    
+
     while True:
-        user_choice = keyboard.read_event(suppress=True).name
+        user_choice = input("Enter your choice (1 or 2): ").strip()
         if user_choice in ['1', '2']:
             break
+        else:
+            print("Invalid choice. Please enter either 1 or 2.")
 
     if user_choice == '1':
         for link in working_links:
@@ -108,16 +113,12 @@ try:
     elif user_choice == '2':
         selected_indices = input("Select/choose links by giving corresponding number(s): ").strip()
         open_links_in_browser(working_links, selected_indices)
-    else:
-        print("Invalid choice. Please enter either 1 or 2.")
 
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
     author = "This code was developed by Farhad Ahmed\nFor more information visit me at http://github.com/f4rh4d-4hmed"
 
-    for _ in range(1):
-        colored_text = ''.join(random.choice(colors) + char for char in author)
-        print(colored_text)
-        time.sleep(0.1)
+    colored_text = ''.join(random.choice(colors) + char for char in author)
+    print(colored_text)
 
 except KeyboardInterrupt:
-    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExitting:)")
+    print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExiting:)")
