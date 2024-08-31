@@ -57,13 +57,12 @@ The script requires the following Python packages:
 
 - `requests`: For making HTTP requests to check the links.
 - `colorama`: For adding color to the output text.
-- `keyboard`: For handling user input and keyboard events.
 
 These dependencies are listed in the `requirements.txt` file and can be installed using the provided command.
 
 ## Contributing
 
-Contributions are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request.
+Contributions are welcome! If you find any issues or have suggestions for improvements and new bdix links, please open an issue or submit a pull request.
 
 ## License
 
