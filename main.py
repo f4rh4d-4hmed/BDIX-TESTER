@@ -9,9 +9,17 @@ import time
 
 init(convert=True)
 
+import os
+import sys
+
+def resource_path(relative_path):
+    if getattr(sys, 'frozen', False):
+        return os.path.join(os.path.dirname(sys.executable), relative_path)
+    return os.path.join(os.path.abspath("."), relative_path)
+
 def read_links_from_file(file_path):
     with open(file_path, 'r') as file:
-        links = file.read().splitlines()
+        links = read_links_from_file(resource_path('url.txt'))
     return links
 
 def check_link(link):
@@ -31,7 +39,7 @@ def check_link(link):
         return f"{Fore.RED}Not working{Style.RESET_ALL}"
 
 def strip_color_codes(text):
-    # Regex pattern to match ANSI escape sequences (color codes)
+    
     ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
     return ansi_escape.sub('', text)
 
@@ -39,7 +47,7 @@ def save_working_links(links, output_file):
     with open(output_file, 'w') as file:
         for i, link in enumerate(links, start=1):
             status = check_link(link)
-            # Strip color codes for file output
+            
             stripped_status = strip_color_codes(status)
             file.write(f"{link}\n")
 
@@ -54,7 +62,7 @@ def process_links(links):
         if "Working" in status:
             status_split = status.split(" - ")
             print(f"{number_color}{i}. {Style.RESET_ALL}{link_color}{link}{Style.RESET_ALL} - {status_color}{status_split[0]}{Style.RESET_ALL} - {latency_color}{status_split[1]}{Style.RESET_ALL}")
-            working_links.append(link)  # Append only if it's a working link
+            working_links.append(link)
         else:
             print(f"{number_color}{i}. {Style.RESET_ALL}{link_color}{link}{Style.RESET_ALL} - {status_color}{status}{Style.RESET_ALL}")
     return working_links
@@ -91,12 +99,12 @@ try:
 
     additional_links = input("\nIf you want to scan more links, paste them here. Otherwise, leave it blank: ")
     if additional_links:
-        additional_links = additional_links.split()  # Split the additional links string into separate links
+        additional_links = additional_links.split()
         links.extend(additional_links)
 
     working_links = process_links(links)
 
-    save_working_links(working_links, 'works.txt')
+    save_working_links(working_links, resource_path('works.txt'))
 
     print("\n\nWhat do you want to do?\n\n1. Open all links in browser (Only Working)\n\n2. Only open the links I want\n")
 
