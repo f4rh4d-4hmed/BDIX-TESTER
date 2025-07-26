@@ -1,48 +1,42 @@
-name: Build & Release Windows Executable
+name: Build Windows Executable
 
 on:
   push:
     tags:
-      - 'v0.2.1'
+      - 'v*'  # Trigger
+  workflow_dispatch:  #manual run
 
 jobs:
   build:
-    name: Build EXE on Windows
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repo
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.x'
+          python-version: '3.11'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install cx_Freeze
           pip install -r requirements.txt
 
-      - name: Build executable with cx_Freeze
+      - name: 🧊 Build executable
         run: python setup.py build
 
-      - name: Copy build output to dist/
+      - name: 📁 Copy build output to dist/
         run: |
           $buildDir = Get-ChildItem -Recurse -Directory -Filter "exe.win-amd64*" | Select-Object -First 1
           mkdir dist
           Copy-Item "$($buildDir.FullName)\*" dist\ -Recurse
         shell: pwsh
 
-      - name: Create ZIP archive
-        run: Compress-Archive -Path dist\* -DestinationPath BDIX-TESTER-v0.2.1.zip
-
-      - name: Create GitHub Release and upload ZIP
-        uses: softprops/action-gh-release@v2
+      - name: 🗂️ Upload artifact
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: v0.2.1
-          name: "v0.2.1 (Experimental)"
-          files: BDIX-TESTER-v0.2.1.zip
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          name: BDIX-TESTER-v0.2.1
+          path: dist/
