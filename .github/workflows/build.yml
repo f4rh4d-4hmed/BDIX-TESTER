@@ -1,42 +1,78 @@
 name: Build Windows Executable
-
 on:
   push:
     tags:
-      - 'v*'  # Trigger
-  workflow_dispatch:  #manual run
+      - 'v*' 
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
-
+      
       - name: 🐍 Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-
+      
       - name: 📦 Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install cx_Freeze
           pip install -r requirements.txt
-
+      
       - name: 🧊 Build executable
         run: python setup.py build
-
+      
       - name: 📁 Copy build output to dist/
         run: |
           $buildDir = Get-ChildItem -Recurse -Directory -Filter "exe.win-amd64*" | Select-Object -First 1
           mkdir dist
           Copy-Item "$($buildDir.FullName)\*" dist\ -Recurse
         shell: pwsh
-
-      - name: 🗂️ Upload artifact
+      
+      - name: 📦 Create ZIP archive
+        run: |
+          $tagName = $env:GITHUB_REF -replace 'refs/tags/', ''
+          Compress-Archive -Path dist\* -DestinationPath "BDIX-TESTER-$tagName-windows.zip"
+        shell: pwsh
+      
+      - name: 🚀 Create Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            BDIX-TESTER-*-windows.zip
+          name: Release ${{ github.ref_name }}
+          body: |
+            ## 🎉 BDIX Tester Release ${{ github.ref_name }}
+            
+            ### 📥 Download
+            - **Windows Executable**: `BDIX-TESTER-${{ github.ref_name }}-windows.zip`
+            
+            ### 🚀 What's New
+            - Bug fixes and improvements
+            - Enhanced link checking capabilities
+            
+            ### 📋 Usage
+            1. Download the ZIP file
+            2. Extract to a folder
+            3. Run the executable
+            
+            ### 🔧 Requirements
+            - Windows 10/11
+            - Use source code for other distro
+            - Internet connection for link checking
+            
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: 🗂️ Upload artifact (backup)
         uses: actions/upload-artifact@v4
         with:
-          name: BDIX-TESTER-v0.2.1
+          name: BDIX-TESTER-${{ github.ref_name }}
           path: dist/
