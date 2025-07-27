@@ -6,7 +6,6 @@ import webbrowser
 import random
 import time
 
-
 init(convert=True)
 
 import os
@@ -19,7 +18,7 @@ def resource_path(relative_path):
 
 def read_links_from_file(file_path):
     with open(file_path, 'r') as file:
-        links = read_links_from_file(resource_path('url.txt'))
+        links = [line.strip() for line in file if line.strip()]
     return links
 
 def check_link(link):
@@ -28,27 +27,23 @@ def check_link(link):
             link = 'http://' + link
         start_time = time.time()
         response = requests.get(link, timeout=3)
-        latency = int((time.time() - start_time) * 1000)  # Calculating latency in milliseconds
+        latency = int((time.time() - start_time) * 1000)
         if response.status_code == 200:
             return f"{Fore.GREEN}Working{Style.RESET_ALL} - {latency}ms"
         elif response.status_code == 301 or response.status_code == 302:
-            return f"{Fore.ORANGE}May contain threat{Style.RESET_ALL}"
+            return f"{Fore.YELLOW}May contain threat{Style.RESET_ALL}" 
         else:
             return f"{Fore.RED}Not working{Style.RESET_ALL}"
     except requests.exceptions.RequestException:
         return f"{Fore.RED}Not working{Style.RESET_ALL}"
 
 def strip_color_codes(text):
-    
     ansi_escape = re.compile(r'\x1B[@-_][0-?]*[ -/]*[@-~]')
     return ansi_escape.sub('', text)
 
 def save_working_links(links, output_file):
     with open(output_file, 'w') as file:
-        for i, link in enumerate(links, start=1):
-            status = check_link(link)
-            
-            stripped_status = strip_color_codes(status)
+        for link in links:
             file.write(f"{link}\n")
 
 def process_links(links):
@@ -57,8 +52,9 @@ def process_links(links):
         status = check_link(link)
         number_color = Fore.WHITE
         link_color = Fore.LIGHTBLUE_EX
-        status_color = Fore.GREEN if "Working" in status else (Fore.RED if "Not working" in status else Fore.ORANGE)
+        status_color = Fore.GREEN if "Working" in status else (Fore.RED if "Not working" in status else Fore.YELLOW)
         latency_color = Fore.LIGHTBLUE_EX
+        
         if "Working" in status:
             status_split = status.split(" - ")
             print(f"{number_color}{i}. {Style.RESET_ALL}{link_color}{link}{Style.RESET_ALL} - {status_color}{status_split[0]}{Style.RESET_ALL} - {latency_color}{status_split[1]}{Style.RESET_ALL}")
@@ -77,13 +73,13 @@ def open_links_in_browser(links, selected_indices):
             index_ranges.append(int(index_range))
 
     for index in sorted(set(index_ranges)):
-        if index <= len(links):
+        if 1 <= index <= len(links):
             webbrowser.open(links[index - 1])
         else:
             print(f"Invalid index: {index}")
 
 try:
-    links = read_links_from_file('url.txt')
+    links = read_links_from_file(resource_path('url.txt'))
 
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
     greeting = r"""
@@ -130,3 +126,7 @@ try:
 
 except KeyboardInterrupt:
     print("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nExiting:)")
+except FileNotFoundError:
+    print(f"Error: Could not find 'url.txt' file. Please make sure it exists in the same directory as the script.")
+except Exception as e:
+    print(f"An error occurred: {e}")
