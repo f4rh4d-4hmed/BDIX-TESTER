@@ -4,7 +4,6 @@ on:
     tags:
       - 'v*' 
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: windows-latest
@@ -35,7 +34,11 @@ jobs:
       
       - name: 📦 Create ZIP archive
         run: |
-          $tagName = $env:GITHUB_REF -replace 'refs/tags/', ''
+          if ($env:GITHUB_REF -like "refs/tags/*") {
+            $tagName = $env:GITHUB_REF -replace 'refs/tags/', ''
+          } else {
+            $tagName = "dev-build"
+          }
           Compress-Archive -Path dist\* -DestinationPath "BDIX-TESTER-$tagName-windows.zip"
         shell: pwsh
       
@@ -74,5 +77,5 @@ jobs:
       - name: 🗂️ Upload artifact (backup)
         uses: actions/upload-artifact@v4
         with:
-          name: BDIX-TESTER-${{ github.ref_name }}
+          name: BDIX-TESTER-${{ github.ref_name || 'dev-build' }}
           path: dist/
