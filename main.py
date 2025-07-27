@@ -26,7 +26,7 @@ def check_link(link):
         if not link.startswith('http://') and not link.startswith('https://'):
             link = 'http://' + link
         start_time = time.time()
-        response = requests.get(link, timeout=3)
+        response = requests.get(link, timeout=2) ##Increase timeout to catch more IP.
         latency = int((time.time() - start_time) * 1000)
         if response.status_code == 200:
             return f"{Fore.GREEN}Working{Style.RESET_ALL} - {latency}ms"
