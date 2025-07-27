@@ -3,7 +3,7 @@
 BDIX-TESTER is a Python script that checks the status of multiple URLs. It reads the links from a file (`url.txt`), checks their availability, and saves the working links to another file (`works.txt`). Additionally, it provides options to open the working links in a web browser.
 ![image](https://github.com/f4rh4d-4hmed/BDIX-TESTER/assets/161406872/663a9de1-9d07-4321-9ff5-2498bad47521)
 
-# Windows [Click Here](https://github.com/f4rh4d-4hmed/BDIX-TESTER/releases/download/v0.2/BDIX-TESTER.zip)
+# Windows [Click Here](https://github.com/f4rh4d-4hmed/BDIX-TESTER/releases/download/v0.2.1/BDIX-TESTER-v0.2.1.zip)
 
 ## Installation
 
