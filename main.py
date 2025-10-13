@@ -211,7 +211,7 @@ try:
             print(f"{Fore.GREEN}✓ Results exported to: {export_filename}{Style.RESET_ALL}")
 
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
-    author = "\n\nThis code was developed by Farhad Ahmed\nFor more information visit me at http://github.com/f4rh4d-4hmed"
+    author = "\n\nMade with love by f4rh4d-4hmed\nFor more information visit me at http://github.com/f4rh4d-4hmed"
 
     colored_text = ''.join(random.choice(colors) + char for char in author)
     print(colored_text)
@@ -222,3 +222,4 @@ except FileNotFoundError:
     print(f"Error: Could not find 'url.txt' file. Please make sure it exists in the same directory as the script.")
 except Exception as e:
     print(f"An error occurred: {e}")
+
