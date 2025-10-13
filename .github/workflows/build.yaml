@@ -1,12 +1,15 @@
 name: Build Windows Executable
+
 on:
   push:
     tags:
       - 'v*' 
   workflow_dispatch:
+
 jobs:
   build:
     runs-on: windows-latest
+    
     steps:
       - name: 📥 Checkout repo
         uses: actions/checkout@v4
@@ -27,9 +30,13 @@ jobs:
       
       - name: 📁 Copy build output to dist/
         run: |
-          $buildDir = Get-ChildItem -Recurse -Directory -Filter "exe.win-amd64*" | Select-Object -First 1
-          mkdir dist
-          Copy-Item "$($buildDir.FullName)\*" dist\ -Recurse
+          $buildDir = Get-ChildItem -Path "build" -Recurse -Directory -Filter "exe.win-amd64*" | Select-Object -First 1
+          if ($null -eq $buildDir) {
+            Write-Error "Build directory not found"
+            exit 1
+          }
+          New-Item -ItemType Directory -Path "dist" -Force
+          Copy-Item -Path "$($buildDir.FullName)\*" -Destination "dist\" -Recurse -Force
         shell: pwsh
       
       - name: 📦 Create ZIP archive
@@ -39,11 +46,13 @@ jobs:
           } else {
             $tagName = "dev-build"
           }
-          Compress-Archive -Path dist\* -DestinationPath "BDIX-TESTER-$tagName-windows.zip"
+          $zipName = "BDIX-TESTER-$tagName-windows.zip"
+          Compress-Archive -Path "dist\*" -DestinationPath $zipName -Force
+          Write-Output "ZIP_NAME=$zipName" >> $env:GITHUB_ENV
         shell: pwsh
       
       - name: 🚀 Create Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
@@ -57,7 +66,7 @@ jobs:
             
             ### 🚀 What's New
             - Bug fixes and improvements
-            - Enhanced link checking capabilities
+            - Enhanced link checking capabilities with more threads
             
             ### 📋 Usage
             1. Download the ZIP file
@@ -77,5 +86,5 @@ jobs:
       - name: 🗂️ Upload artifact (backup)
         uses: actions/upload-artifact@v4
         with:
-          name: BDIX-TESTER-${{ github.ref_name || 'dev-build' }}
+          name: BDIX-TESTER-${{ github.ref_name != '' && github.ref_name || 'dev-build' }}
           path: dist/
