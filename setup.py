@@ -7,8 +7,8 @@ build_exe_options = {
 
 setup(
     name="BDIX-TESTER",
-    version="0.2.1",
-    description="BDIX‑TESTER v0.2.1 (Experimental)",
+    version="0.2.2",
+    description="BDIX‑TESTER v0.2.2",
     options={"build_exe": build_exe_options},
     executables=[Executable("main.py", base=None)],
 )
