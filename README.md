@@ -71,7 +71,9 @@ These dependencies are listed in the `requirements.txt` file and can be installe
 ## Contributing
 
 Contributions are welcome! If you find any issues or have suggestions for improvements and new bdix links, please open an issue or submit a pull request.
-
+## Current contributors
+<a herf="https://github.com/f4rh4d-4hmed/BDIX-TESTER/graphs/contributors"><img src="https://contrib.rocks/image?repo=f4rh4d-4hmed/BDIX-TESTER" />
+</a>
 ## License
 
 This project is licensed under the [MIT License](LICENSE).
