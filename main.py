@@ -160,7 +160,7 @@ def open_links_in_browser(links, selected_indices):
             print(f"Invalid index: {index}")
 
 try:
-    links = read_links_from_file(resource_path('url.txt'))
+    links = read_links_from_file(resource_path('urlv2.txt'))
 
     colors = [Fore.RED, Fore.GREEN, Fore.BLUE]
     greeting = r"""
