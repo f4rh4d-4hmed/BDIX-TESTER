@@ -28,7 +28,7 @@ To build it yourself-
 ```
 python3 setup.py build
 ```
-Should work on linix as well (recommanded to use directly from source code)
+Should work on linux as well (recommanded to use directly from source code)
 ## Usage
 1. Run the script by executing the following command in your terminal or command prompt:
 
